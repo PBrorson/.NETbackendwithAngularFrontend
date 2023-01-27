@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AngularASPcrud.Models
+namespace AngularASPcrud.Domain.Models
 {
     public class Student
     {
@@ -8,12 +8,13 @@ namespace AngularASPcrud.Models
         public int Id { get; set; }
 
         public string firstname { get; set; }
-        
+
         public string lastname { get; set; }
-        
+
         public string course { get; set; }
 
-        }
+
+    }
 }
-    
+
 

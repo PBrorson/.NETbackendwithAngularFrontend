@@ -1,4 +1,7 @@
-using AngularASPcrud.Models;
+using AngularASPcrud.API.MiddleWare;
+using AngularASPcrud.Domain;
+using AngularASPcrud.Services;
+using AngularASPcrud.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,15 +11,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddDbContext<StudentDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("App"));
 });
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddTransient<ErrorHandlingMiddleware>();
 var app = builder.Build();
 app.UseCors(policy => policy.AllowAnyHeader()
 .AllowAnyMethod()
 .SetIsOriginAllowed(origin => true)
-.AllowCredentials());
+.AllowCredentials()
+);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -28,7 +35,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 app.MapControllers();
 
 app.Run();
